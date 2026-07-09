@@ -31,12 +31,9 @@ const nextConfig: NextConfig = {
     },
     async rewrites() {
         return [
-            // Proxy/Rewrite untuk request API ke Hono backend (menghindari masalah CORS & mempermudah cookie)
-            {
-                source: "/api/:path*",
-                destination: `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/:path*`,
-            },
             // Proxy/Rewrite untuk memuat aset statis (seperti avatar user) yang disimpan di backend storage
+            // Auth API ditangani oleh route handler /app/api/auth/[...all]/route.ts
+            // Other API calls go directly to backend (CORS configured in ALLOWED_ORIGINS)
             {
                 source: "/storage/:path*",
                 destination: `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/storage/:path*`,

@@ -1,16 +1,69 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google"
+// import { Geist, Geist_Mono, Inter } from "next/font/google"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
+import { createMetadata } from "@/lib/metadata"
+import { siteConfig } from "@/config/site"
+import ErrorBoundary from "@/providers/error-boundary"
+import { Providers } from "@/providers/providers"
+import { Inter } from "next/font/google";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'})
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
+
+// const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+
+// const fontMono = Geist_Mono({
+//   subsets: ["latin"],
+//   variable: "--font-mono",
+// })
+export const metadata = createMetadata({
+  metadataBase: new URL(siteConfig.url.base),
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: [
+    {
+      name: siteConfig.author,
+      url: siteConfig.url.author,
+    },
+  ],
+  creator: siteConfig.author,
+  publisher: siteConfig.author,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: siteConfig.url.base,
+    languages: {
+      "id-ID": "/",
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    // apple: "/apple-touch-icon.png",
+  },
+  category: "government",
+  classification: "government services",
+  applicationName: siteConfig.name,
 })
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -18,12 +71,14 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
+      lang="id"
+      suppressHydrationWarning className={cn("font-sans", inter.variable)}
+
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ErrorBoundary>
+          <Providers>{children}</Providers>
+        </ErrorBoundary>
       </body>
     </html>
   )
