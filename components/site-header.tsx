@@ -1,17 +1,76 @@
+"use client"
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
+import { useSidebar } from "@/components/ui/sidebar"
+import { BreadcrumbItemType } from "@/types"
+import { PanelLeftIcon } from "lucide-react"
+import { Fragment, type ReactNode } from "react"
 
-export function SiteHeader() {
+export function SiteHeader({
+  breadcrumb,
+}: {
+  breadcrumb?: BreadcrumbItemType[]
+}) {
+  const { toggleSidebar } = useSidebar()
+
   return (
-    <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
-      <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
-        <SidebarTrigger className="-ml-1" />
+    <header className="sticky top-0 z-50 flex w-full items-center border-b bg-background">
+      <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
+        <Button
+          className="h-8 w-8"
+          variant="ghost"
+          size="icon"
+          onClick={toggleSidebar}
+        >
+          <PanelLeftIcon />
+        </Button>
         <Separator
           orientation="vertical"
-          className="mx-2 data-[orientation=vertical]:h-4"
+          className="mr-2 data-vertical:h-4 data-vertical:self-auto"
         />
-        <h1 className="text-base font-medium">Documents</h1>
+
+        {breadcrumb && breadcrumb.length > 0 && (
+          <Breadcrumb>
+            <BreadcrumbList>
+              {breadcrumb.map((item, index) => (
+                <Fragment key={index}>
+                  <BreadcrumbItem
+                    className={
+                      index < breadcrumb.length - 1
+                        ? "hidden md:block"
+                        : undefined
+                    }
+                  >
+                    {item.href ? (
+                      <BreadcrumbLink href={item.href}>
+                        {item.label}
+                      </BreadcrumbLink>
+                    ) : (
+                      <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                    )}
+                  </BreadcrumbItem>
+                  {index < breadcrumb.length - 1 && (
+                    <BreadcrumbSeparator
+                      key={`sep-${index}`}
+                      className="hidden md:block"
+                    />
+                  )}
+                </Fragment>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
+        )}
+
+        {/* <SearchForm className="w-full sm:ml-auto sm:w-auto" /> */}
       </div>
     </header>
   )

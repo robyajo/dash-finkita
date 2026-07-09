@@ -10,6 +10,9 @@ async function proxyAuth(
   const targetUrl = new URL(`/api/auth/${path}`, BACKEND_URL);
   targetUrl.search = request.nextUrl.search;
 
+  console.log(`[AUTH PROXY] ${request.method} /api/auth/${path}`);
+  console.log(`[AUTH PROXY] Cookie:`, request.headers.get("cookie")?.substring(0, 80) || "NONE");
+
   const headers = new Headers();
   request.headers.forEach((value, key) => {
     if (key.toLowerCase() !== "host") {
@@ -33,6 +36,12 @@ async function proxyAuth(
   }
 
   const response = await fetch(targetUrl, init);
+
+  console.log(`[AUTH PROXY] Response: ${response.status} ${response.statusText}`);
+  const setCookie = response.headers.get("set-cookie");
+  if (setCookie) {
+    console.log(`[AUTH PROXY] Set-Cookie:`, fixSetCookie(setCookie).substring(0, 100));
+  }
 
   // If backend returns a redirect, follow it manually
   if (response.status >= 300 && response.status < 400) {
