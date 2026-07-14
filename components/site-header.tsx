@@ -8,34 +8,28 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { useSidebar } from "@/components/ui/sidebar"
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
+import NotificationDropdown from "@/components/common/notification-dropdown"
 import { BreadcrumbItemType } from "@/types"
-import { PanelLeftIcon } from "lucide-react"
-import { Fragment, type ReactNode } from "react"
+import { useTheme } from "next-themes"
+import { Fragment } from "react"
 
 export function SiteHeader({
   breadcrumb,
 }: {
   breadcrumb?: BreadcrumbItemType[]
 }) {
-  const { toggleSidebar } = useSidebar()
+  const { theme, setTheme } = useTheme()
 
   return (
-    <header className="sticky top-0 z-50 flex w-full items-center border-b bg-background">
-      <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
-        <Button
-          className="h-8 w-8"
-          variant="ghost"
-          size="icon"
-          onClick={toggleSidebar}
-        >
-          <PanelLeftIcon />
-        </Button>
+    <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background">
+      <div className="flex flex-1 items-center gap-2 px-3">
+        <SidebarTrigger className="-ml-1" />
         <Separator
           orientation="vertical"
-          className="mr-2 data-vertical:h-4 data-vertical:self-auto"
+          className="mr-2 data-[orientation=vertical]:h-full"
         />
 
         {breadcrumb && breadcrumb.length > 0 && (
@@ -70,7 +64,14 @@ export function SiteHeader({
           </Breadcrumb>
         )}
 
-        {/* <SearchForm className="w-full sm:ml-auto sm:w-auto" /> */}
+        <div className="flex items-center gap-2 ml-auto ">
+          <NotificationDropdown />
+          <AnimatedThemeToggler
+            theme={theme as "light" | "dark" | undefined}
+            onThemeChange={(newTheme) => setTheme(newTheme)}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+          />
+        </div>
       </div>
     </header>
   )

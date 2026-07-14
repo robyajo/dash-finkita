@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import {
-  AlertTriangle,
   RotateCcw,
   Home,
   ChevronRight,
@@ -32,35 +32,33 @@ export default function PageError({ error, reset }: ErrorProps) {
   }
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden rounded-2xl border border-zinc-900 bg-zinc-950 p-6 text-white shadow-2xl">
-      {/* Background gradients */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500/5 blur-[100px]" />
-      <div className="pointer-events-none absolute top-1/3 left-1/3 h-[250px] w-[250px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500/5 blur-[80px]" />
-
+    <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background p-6 text-foreground">
       <div className="relative z-10 flex w-full max-w-lg flex-col items-center space-y-6 text-center">
-        {/* Warning Icon Box */}
-        <div className="flex h-20 w-20 animate-pulse items-center justify-center rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
-          <AlertTriangle className="h-10 w-10 text-red-500" />
-        </div>
+        <Image
+          src="/assets/500.png"
+          alt="500 Server Error"
+          width={280}
+          height={280}
+          priority
+        />
 
         <div className="space-y-2">
-          <span className="inline-flex items-center gap-1 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-400">
+          <span className="inline-flex items-center gap-1 rounded-full border border-destructive/30 bg-destructive/10 px-3 py-1 text-xs font-semibold text-destructive">
             System Error
           </span>
-          <h2 className="bg-linear-to-b from-white to-zinc-400 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent md:text-3xl">
+          <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">
             Something went wrong!
           </h2>
-          <p className="text-sm leading-relaxed text-zinc-400 md:text-base">
+          <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
             An unexpected error occurred while processing this page. Please try
             reloading or contact system support.
           </p>
         </div>
 
-        {/* Buttons */}
         <div className="flex w-full flex-col items-center justify-center gap-3 pt-2 sm:w-auto sm:flex-row">
           <Button
             onClick={() => reset()}
-            className="w-full cursor-pointer bg-red-600 text-white shadow-lg shadow-red-600/10 transition-all hover:bg-red-500 hover:shadow-red-600/25 sm:w-auto"
+            className="w-full cursor-pointer sm:w-auto"
           >
             <RotateCcw className="mr-2 h-4 w-4" />
             Try Again
@@ -69,7 +67,7 @@ export default function PageError({ error, reset }: ErrorProps) {
           <Link href="/" className="w-full sm:w-auto">
             <Button
               variant="outline"
-              className="w-full cursor-pointer border-zinc-800 bg-zinc-900/50 text-zinc-300 backdrop-blur-sm hover:bg-zinc-900 hover:text-white sm:w-auto"
+              className="w-full cursor-pointer sm:w-auto"
             >
               <Home className="mr-2 h-4 w-4" />
               Return Home
@@ -77,16 +75,15 @@ export default function PageError({ error, reset }: ErrorProps) {
           </Link>
         </div>
 
-        {/* Expandable Error Details */}
-        <div className="w-full overflow-hidden rounded-xl border border-zinc-900 bg-zinc-950/80 text-left shadow-inner">
+        <div className="w-full overflow-hidden rounded-xl border bg-muted/30 text-left">
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="flex w-full items-center justify-between p-4 text-xs font-medium text-zinc-400 transition-colors hover:bg-zinc-900/40 hover:text-white"
+            className="flex w-full items-center justify-between p-4 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <span className="flex items-center gap-2">
               Error Details
               {error.digest && (
-                <span className="font-mono text-[10px] text-zinc-600">
+                <span className="font-mono text-[10px] text-muted-foreground/60">
                   (Digest: {error.digest})
                 </span>
               )}
@@ -99,28 +96,25 @@ export default function PageError({ error, reset }: ErrorProps) {
           </button>
 
           {showDetails && (
-            <div className="relative border-t border-zinc-900 bg-zinc-950 p-4">
+            <div className="relative border-t bg-muted/20 p-4">
               <button
                 onClick={copyToClipboard}
-                className="absolute top-2.5 right-2.5 rounded-md border border-zinc-800 bg-zinc-900 p-1.5 text-zinc-400 transition-colors hover:text-white"
+                className="absolute top-2.5 right-2.5 rounded-md border bg-background p-1.5 text-muted-foreground transition-colors hover:text-foreground"
                 title="Copy Error stack"
               >
                 {copied ? (
-                  <Check className="h-3.5 w-3.5 text-emerald-400" />
+                  <Check className="h-3.5 w-3.5 text-emerald-500" />
                 ) : (
                   <Copy className="h-3.5 w-3.5" />
                 )}
               </button>
-              <pre className="max-h-48 overflow-y-auto pr-6 font-mono text-[10px] whitespace-pre-wrap text-red-300 select-text">
+              <pre className="max-h-48 overflow-y-auto pr-6 font-mono text-[10px] whitespace-pre-wrap text-destructive select-text">
                 {error.stack || error.message || String(error)}
               </pre>
             </div>
           )}
         </div>
       </div>
-
-      {/* Grid Pattern */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#80808005_1px,transparent_1px),linear-gradient(to_bottom,#80808005_1px,transparent_1px)] bg-size-[14px_24px] opacity-40" />
     </div>
   )
 }

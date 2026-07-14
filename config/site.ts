@@ -47,6 +47,15 @@ export const siteConfig: any = {
   type: "website",
   publishedTime: new Date().toISOString(),
   twitterCard: "summary_large_image",
+  logo: {
+    icon: "/assets/logo.svg",
+    full: "/assets/logo-png.png",
+    titleDark: "/assets/logo-title-dark.png",
+    titleLight: "/assets/logo-title-light.png",
+    titleDescDark: "/assets/logo-title-desc-dark-mode.png",
+    titleDescLight: "/assets/logo-title-desc-light-mode.png",
+    favicon: "/assets/favicon.ico",
+  },
 }
 
 export const modulesConfig = {

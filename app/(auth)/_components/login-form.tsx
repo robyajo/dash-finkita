@@ -15,6 +15,7 @@ import { authClient } from "@/lib/auth-client"
 import { useState } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import GoogleButton from "./google-button"
 
 type FormErrors = {
@@ -81,10 +82,10 @@ export function LoginForm({
       {...props}
     >
       <FieldGroup>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Login to your account</h1>
-          <p className="text-sm text-balance text-muted-foreground">
-            Enter your email below to login to your account
+        <div className="flex flex-col gap-2 text-left">
+          <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+          <p className="text-sm text-muted-foreground">
+            Sign in to your account to continue
           </p>
         </div>
         <Field>
@@ -108,16 +109,17 @@ export function LoginForm({
         <Field>
           <div className="flex items-center">
             <FieldLabel htmlFor="password">Password</FieldLabel>
-            <a
-              href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
+            <Link
+              href="/forgot-password"
+              className="ml-auto text-xs text-muted-foreground underline-offset-4 hover:underline"
             >
-              Forgot your password?
-            </a>
+              Forgot password?
+            </Link>
           </div>
           <InputPassword
             id="password"
             required
+            placeholder="Enter your password"
             className={cn("bg-background", errors.password && "border-destructive")}
             value={form.password}
             onChange={(e) => {
@@ -130,19 +132,19 @@ export function LoginForm({
           )}
         </Field>
         <Field>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Logging in..." : "Login"}
+          <Button type="submit" disabled={isLoading} className="w-full">
+            {isLoading ? "Signing in..." : "Sign In"}
           </Button>
         </Field>
-        <FieldSeparator>Or continue with</FieldSeparator>
+        <FieldSeparator>or continue with</FieldSeparator>
         <Field>
-          <GoogleButton />
-          <FieldDescription className="text-center">
+          <GoogleButton variant="signin" />
+          <p className="text-center text-xs text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <a href="/register" className="underline underline-offset-4">
-              Sign up
-            </a>
-          </FieldDescription>
+            <Link href="/signup" className="underline underline-offset-4 hover:text-foreground">
+              Create one
+            </Link>
+          </p>
         </Field>
       </FieldGroup>
     </form>

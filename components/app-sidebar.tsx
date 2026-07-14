@@ -4,6 +4,8 @@ import * as React from "react"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
+import { authClient } from "@/lib/auth-client"
+
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -17,6 +19,8 @@ import {
 } from "@/components/ui/sidebar"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { DashboardSquare01Icon, Menu01Icon, ChartHistogramIcon, Folder01Icon, UserGroupIcon, Camera01Icon, File01Icon, Settings05Icon, HelpCircleIcon, SearchIcon, Database01Icon, Analytics01Icon, CommandIcon } from "@hugeicons/core-free-icons"
+import { NavMainUsers } from "./common/nav-main-users"
+import { NavMainAdmin } from "./common/nav-main-admin"
 
 const data = {
   user: {
@@ -164,6 +168,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: sessionData, isPending } = authClient.useSession()
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -182,12 +187,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        {(sessionData?.user as any)?.role === "ADMIN" && <NavMainAdmin />}
+        {(sessionData?.user as any)?.role === "USER" && (
+          <NavMainUsers
+            userType={(sessionData?.user as any)?.type || "global"}
+          />
+        )}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        By Finkita
       </SidebarFooter>
     </Sidebar>
   )

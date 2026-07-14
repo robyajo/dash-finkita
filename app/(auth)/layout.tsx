@@ -1,13 +1,6 @@
-
-import { HugeiconsIcon } from "@hugeicons/react"
-import { LayoutBottomIcon } from "@hugeicons/core-free-icons"
 import { siteConfig } from "@/config/site"
 import Image from "next/image"
-import { Geist_Mono, Inter } from "next/font/google"
-import { cn } from "@/lib/utils"
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
-const fontMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
+import Link from "next/link"
 
 export default function AuthLayout({
     children,
@@ -15,44 +8,43 @@ export default function AuthLayout({
     children: React.ReactNode
 }) {
     return (
-        <html
-            lang="id"
-            suppressHydrationWarning
-            className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
-        >
-            <body>
-                {/* Layout UI */}
-                {/* Place children where you want to render a page or nested layout */}
-                <main>
-                    <div className="grid min-h-svh lg:grid-cols-2">
-                        <div className="flex flex-col gap-4 p-6 md:p-10">
-                            <div className="flex justify-center gap-2 md:justify-start">
-                                <a href="#" className="flex items-center gap-2 font-medium">
-                                    <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                                        <HugeiconsIcon icon={LayoutBottomIcon} strokeWidth={2} className="size-4" />
-                                    </div>
-                                    {siteConfig.name}
-                                </a>
-                            </div>
-                            <div className="flex flex-1 items-center justify-center">
-                                <div className="w-full max-w-xs">
-                                    {children}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="relative hidden bg-muted lg:block">
-                            <Image
-                                width={1287}
-                                height={800}
-                                src="https://images.unsplash.com/photo-1695009668450-c0f71243aefa?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                                alt="Image"
-                                className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-                            />
-                        </div>
+        <div className="grid min-h-svh lg:grid-cols-2">
+            <div className="flex flex-col gap-4 p-6 md:p-10">
+                <Link href="/" className="flex items-center gap-2 font-medium">
+                    <div className="relative flex size-8 items-center justify-center ">
+                        <Image
+                            src={siteConfig.logo.icon}
+                            className="size-full rounded-md"
+                            alt={siteConfig.name}
+                            width={32}
+                            height={32}
+                            priority
+                        />
                     </div>
-
-                </main>
-            </body>
-        </html>
+                    <span className="text-lg font-semibold">{siteConfig.name}</span>
+                </Link>
+                <div className="flex flex-1 items-center justify-center">
+                    <div className="w-full max-w-sm">
+                        {children}
+                    </div>
+                </div>
+            </div>
+            <div className="relative hidden bg-linear-to-br from-primary/10 via-muted to-primary/5 lg:flex lg:flex-col lg:items-center lg:justify-center">
+                <div className="relative z-10 mx-auto max-w-md space-y-6 p-10 text-center">
+                    <blockquote className="space-y-2">
+                        <p className="text-lg font-medium leading-relaxed text-balance">
+                            &ldquo;Kelola keuangan rumah tangga Anda dengan mudah. Catat pemasukan,
+                            pengeluaran, dan pantau dompet dalam satu aplikasi.&rdquo;
+                        </p>
+                        <footer className="text-sm text-muted-foreground">
+                            {siteConfig.description}
+                        </footer>
+                    </blockquote>
+                </div>
+                {/* Decorative pattern */}
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,var(--primary)_1%,transparent_60%)] opacity-[0.07]" />
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,var(--primary)_1%,transparent_30%)] opacity-[0.05]" />
+            </div>
+        </div>
     )
 }

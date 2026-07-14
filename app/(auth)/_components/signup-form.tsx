@@ -15,6 +15,7 @@ import { authClient } from "@/lib/auth-client"
 import { useState } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import GoogleButton from "./google-button"
 
 type FormErrors = {
@@ -86,7 +87,7 @@ export function SignupForm({
       }
 
       toast.success("Account created successfully")
-      router.push("/")
+      router.push("/dashboard")
     } catch (err: any) {
       toast.error(err.message || "Something went wrong")
     } finally {
@@ -106,10 +107,10 @@ export function SignupForm({
       {...props}
     >
       <FieldGroup>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Create your account</h1>
-          <p className="text-sm text-balance text-muted-foreground">
-            Fill in the form below to create your account
+        <div className="flex flex-col gap-2 text-left">
+          <h1 className="text-2xl font-bold tracking-tight">Create an account</h1>
+          <p className="text-sm text-muted-foreground">
+            Get started with your free account
           </p>
         </div>
         <Field>
@@ -144,10 +145,6 @@ export function SignupForm({
               clearError("email")
             }}
           />
-          <FieldDescription>
-            We&apos;ll use this to contact you. We will not share your email
-            with anyone else.
-          </FieldDescription>
           {errors.email && (
             <p className="text-sm text-destructive">{errors.email}</p>
           )}
@@ -157,6 +154,7 @@ export function SignupForm({
           <InputPassword
             id="password"
             required
+            placeholder="Min. 8 characters"
             className={cn("bg-background", errors.password && "border-destructive")}
             value={form.password}
             onChange={(e) => {
@@ -164,9 +162,6 @@ export function SignupForm({
               clearError("password")
             }}
           />
-          <FieldDescription>
-            Must be at least 8 characters long.
-          </FieldDescription>
           {errors.password && (
             <p className="text-sm text-destructive">{errors.password}</p>
           )}
@@ -176,6 +171,7 @@ export function SignupForm({
           <InputPassword
             id="confirm-password"
             required
+            placeholder="Re-enter your password"
             className={cn("bg-background", errors.confirmPassword && "border-destructive")}
             value={form.confirmPassword}
             onChange={(e) => {
@@ -183,25 +179,24 @@ export function SignupForm({
               clearError("confirmPassword")
             }}
           />
-          <FieldDescription>Please confirm your password.</FieldDescription>
           {errors.confirmPassword && (
             <p className="text-sm text-destructive">{errors.confirmPassword}</p>
           )}
         </Field>
         <Field>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading} className="w-full">
             {isLoading ? "Creating account..." : "Create Account"}
           </Button>
         </Field>
-        <FieldSeparator>Or continue with</FieldSeparator>
+        <FieldSeparator>or continue with</FieldSeparator>
         <Field>
-          <GoogleButton />
-          <FieldDescription className="text-center">
+          <GoogleButton variant="signup" />
+          <p className="text-center text-xs text-muted-foreground">
             Already have an account?{" "}
-            <a href="/" className="underline underline-offset-4">
+            <Link href="/" className="underline underline-offset-4 hover:text-foreground">
               Sign in
-            </a>
-          </FieldDescription>
+            </Link>
+          </p>
         </Field>
       </FieldGroup>
     </form>

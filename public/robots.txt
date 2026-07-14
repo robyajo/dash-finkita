@@ -1,0 +1,8 @@
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: *
+Disallow: /api/
+Allow: /
+
+Sitemap: https://dashboard.finkita.web.id/sitemap.xml
