@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2Icon, AlertCircleIcon, CheckCircle2Icon } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
+import { isMobile } from "@/lib/auth-mobile"
 
 function CallbackContent() {
   const router = useRouter()
@@ -24,12 +25,11 @@ function CallbackContent() {
         setStatus("error")
         setMessage(errorParam || "Authentication failed.")
         toast.error(errorParam || "Authentication failed.")
-        setTimeout(() => router.replace("/login"), 2000)
+        setTimeout(() => router.replace("/"), 2000)
         return
       }
 
       try {
-        // Fetch the session using Better Auth client
         const { data: session, error } = await authClient.getSession()
 
         if (error || !session) {
@@ -44,9 +44,18 @@ function CallbackContent() {
         setStatus("success")
         setMessage(`Login successful! Welcome back, ${session.user.name}. Redirecting...`)
         toast.success("Logged in successfully!")
+
         setTimeout(() => {
-          router.push(redirectUrl)
-          router.refresh()
+          // On mobile, use deep link to redirect back to the app
+          // The app's WebView or native handler will pick up this URL
+          if (isMobile()) {
+            const appScheme = process.env.NEXT_PUBLIC_APP_SCHEME || "finkita"
+            const deepLink = `${appScheme}://auth/success?path=${encodeURIComponent(redirectUrl)}`
+            window.location.href = deepLink
+          } else {
+            router.push(redirectUrl)
+            router.refresh()
+          }
         }, 1500)
       } catch (err) {
         setStatus("error")
@@ -60,29 +69,21 @@ function CallbackContent() {
   }, [searchParams, router])
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[#020617] p-6 font-mono text-white select-none">
-      {/* Background ambient grids */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] bg-size-[4rem_4rem] opacity-45" />
-
-      {/* Subtle background glow */}
-      <div className="pointer-events-none absolute top-1/4 left-1/4 h-125 w-125 rounded-full bg-cyan-500/1.5 blur-[150px]" />
-      <div className="pointer-events-none absolute right-1/4 bottom-1/4 h-125 w-125 rounded-full bg-blue-500/1.5 blur-[150px]" />
-
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-background p-6 text-foreground">
       <div className="relative z-10 w-full max-w-md">
         {status === "processing" && (
           <div className="transition-all duration-300">
-            <Card className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40 p-8 text-center shadow-2xl backdrop-blur-xl">
+            <Card className="overflow-hidden rounded-2xl border p-8 text-center shadow-2xl">
               <CardContent className="flex flex-col items-center justify-center p-0">
                 <div className="relative mb-6 flex items-center justify-center">
-                  <div className="absolute h-16 w-16 animate-ping rounded-full border border-cyan-500/20 opacity-25" />
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-cyan-500/20 bg-cyan-500/10 text-cyan-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
                     <Loader2Icon className="h-6 w-6 animate-spin" />
                   </div>
                 </div>
-                <h2 className="mb-2 text-sm font-bold tracking-wider text-white uppercase">
+                <h2 className="mb-2 text-sm font-bold tracking-wider uppercase">
                   Authenticating
                 </h2>
-                <p className="max-w-xs font-sans text-xs leading-relaxed text-white/50">
+                <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
                   {message}
                 </p>
               </CardContent>
@@ -92,18 +93,17 @@ function CallbackContent() {
 
         {status === "success" && (
           <div className="transition-all duration-300">
-            <Card className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40 p-8 text-center shadow-2xl backdrop-blur-xl">
+            <Card className="overflow-hidden rounded-2xl border p-8 text-center shadow-2xl">
               <CardContent className="flex flex-col items-center justify-center p-0">
                 <div className="relative mb-6 flex items-center justify-center">
-                  <div className="absolute h-16 w-16 animate-ping rounded-full border border-emerald-500/20 opacity-25" />
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-500">
                     <CheckCircle2Icon className="h-6 w-6" />
                   </div>
                 </div>
-                <h2 className="mb-2 text-sm font-bold tracking-wider text-emerald-400 uppercase">
+                <h2 className="mb-2 text-sm font-bold tracking-wider text-emerald-500 uppercase">
                   Success
                 </h2>
-                <p className="max-w-xs font-sans text-xs leading-relaxed text-white/50">
+                <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
                   {message}
                 </p>
               </CardContent>
@@ -113,23 +113,22 @@ function CallbackContent() {
 
         {status === "error" && (
           <div className="transition-all duration-300">
-            <Card className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40 p-8 text-center shadow-2xl backdrop-blur-xl">
+            <Card className="overflow-hidden rounded-2xl border p-8 text-center shadow-2xl">
               <CardContent className="flex flex-col items-center justify-center p-0">
                 <div className="relative mb-6 flex items-center justify-center">
-                  <div className="absolute h-16 w-16 animate-ping rounded-full border border-red-500/20 opacity-25" />
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 text-red-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-destructive/20 bg-destructive/10 text-destructive">
                     <AlertCircleIcon className="h-6 w-6" />
                   </div>
                 </div>
-                <h2 className="mb-2 text-sm font-bold tracking-wider text-red-400 uppercase">
+                <h2 className="mb-2 text-sm font-bold tracking-wider text-destructive uppercase">
                   Authentication Failed
                 </h2>
-                <p className="mb-6 max-w-xs font-sans text-xs leading-relaxed text-white/50">
+                <p className="mb-6 max-w-xs text-xs leading-relaxed text-muted-foreground">
                   {message}
                 </p>
                 <Button
-                  onClick={() => router.push("/login")}
-                  className="w-full cursor-pointer rounded-xl bg-cyan-500 py-2 font-mono text-xs font-bold text-white uppercase transition-all hover:bg-cyan-400 active:scale-[0.98]"
+                  onClick={() => router.push("/")}
+                  className="w-full cursor-pointer rounded-xl"
                 >
                   Back to Login
                 </Button>
@@ -146,8 +145,8 @@ export default function OauthCallbackPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-[#020617] font-mono text-white">
-          <div className="animate-pulse text-xs tracking-wider text-white/40 uppercase">
+        <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
+          <div className="animate-pulse text-xs tracking-wider text-muted-foreground uppercase">
             Loading Callback...
           </div>
         </div>

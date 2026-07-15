@@ -33,31 +33,38 @@ interface GoogleButtonProps {
 export default function GoogleButton({ variant = 'signin' }: GoogleButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSocialSignIn = async (provider: "google") => {
+  const handleGoogleAuth = async () => {
     try {
       setIsLoading(true)
+
+      // Redirect-based OAuth flow via Better Auth
+      // Works on both desktop web and mobile WebView
       await authClient.signIn.social({
-        provider,
+        provider: "google",
         callbackURL: "/oauth/callback?redirect=/dashboard",
       })
     } catch (err) {
-      toast.error(`Failed to sign in with ${provider}`)
+      toast.error(`Failed to ${variant === 'signin' ? 'sign in' : 'sign up'} with Google`)
       console.error(err)
     } finally {
       setIsLoading(false)
     }
   }
 
+  const buttonText = variant === 'signin'
+    ? 'Sign in with Google'
+    : 'Sign up with Google'
+
   return (
     <Button
       variant="outline"
       type="button"
-      onClick={() => handleSocialSignIn("google")}
+      onClick={handleGoogleAuth}
       disabled={isLoading}
       className="w-full"
     >
       <GoogleIcon />
-      {variant === 'signin' ? 'Sign in with Google' : 'Sign up with Google'}
+      {isLoading ? 'Connecting...' : buttonText}
     </Button>
   )
 }
