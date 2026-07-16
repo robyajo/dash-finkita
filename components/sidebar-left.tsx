@@ -21,6 +21,8 @@ import { useTheme } from "next-themes"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { CommandIcon, AudioWave01Icon, SearchIcon, SparklesIcon, HomeIcon, InboxIcon, CalendarIcon, Settings05Icon, CubeIcon, Delete02Icon, MessageQuestionIcon, DashboardBrowsingIcon } from "@hugeicons/core-free-icons"
 
+import { Wallet } from "lucide-react"
+
 // This is sample data.
 const data = {
 
@@ -35,11 +37,18 @@ const data = {
 
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: (
         <HugeiconsIcon icon={DashboardBrowsingIcon} strokeWidth={2} />
       ),
       isActive: true,
+    },
+    {
+      title: "Pockets",
+      url: "/pockets",
+      icon: (
+        <Wallet className="size-4" />
+      ),
     },
     {
       title: "Inbox",
