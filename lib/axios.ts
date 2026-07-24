@@ -10,4 +10,14 @@ const axios = Axios.create({
   timeout: 30000,
 })
 
+axios.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("finkita_access_token")
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+  }
+  return config
+})
+
 export default axios
